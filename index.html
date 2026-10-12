@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101828">
+  <meta name="description" content="Save, organize, and reuse programming error fixes with Error2Learning.">
+  <title>Error2Learning | Programming Error Notebook</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-layout">
+
+    <aside class="sidebar">
+      <a href="#" class="brand">
+        <span class="brand-icon">&lt;/&gt;</span>
+        <span>Error<span class="brand-highlight">2</span>Learning</span>
+      </a>
+
+      <p class="sidebar-label">WORKSPACE</p>
+
+      <nav class="navigation">
+        <button class="nav-item active" data-view="all">
+          <span>▦</span> All Errors
+          <span class="nav-count" id="navTotal">0</span>
+        </button>
+        <button class="nav-item" data-view="favorites">
+          <span>♡</span> Favorites
+        </button>
+      </nav>
+
+      <p class="sidebar-label">LANGUAGES</p>
+
+      <nav class="navigation language-navigation">
+        <button class="nav-item" data-language="Python">
+          <span class="language-dot python-dot"></span> Python
+        </button>
+        <button class="nav-item" data-language="Java">
+          <span class="language-dot java-dot"></span> Java
+        </button>
+        <button class="nav-item" data-language="JavaScript">
+          <span class="language-dot js-dot"></span> JavaScript
+        </button>
+        <button class="nav-item" data-language="SQL">
+          <span class="language-dot sql-dot"></span> SQL
+        </button>
+        <button class="nav-item" data-language="Other">
+          <span class="language-dot other-dot"></span> Other
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="learning-card">
+          <span class="learning-icon">✦</span>
+          <h3>Learn from every error.</h3>
+          <p>Save the fix today. Remember it tomorrow.</p>
+        </div>
+        <p class="sidebar-footer">Built for learners, by learners.</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">YOUR PERSONAL KNOWLEDGE BASE</p>
+          <h1>Programming Error Notebook</h1>
+          <p class="subtitle">Every error is a lesson. Every fix makes you better.</p>
+        </div>
+        <button class="primary-button" id="addErrorBtn">
+          <span>＋</span> Add New Error
+        </button>
+      </header>
+
+      <section class="stats-grid" aria-label="Error library statistics">
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon purple">▤</span>
+            <span class="stat-label">TOTAL ERRORS</span>
+          </div>
+          <p class="stat-value" id="totalErrors">0</p>
+          <p class="stat-description">Saved in your library</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon yellow">♡</span>
+            <span class="stat-label">FAVORITES</span>
+          </div>
+          <p class="stat-value" id="favoriteErrors">0</p>
+          <p class="stat-description">Your most useful fixes</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon green">⌘</span>
+            <span class="stat-label">LANGUAGES</span>
+          </div>
+          <p class="stat-value" id="languageCount">0</p>
+          <p class="stat-description">Languages represented</p>
+        </article>
+      </section>
+
+      <section class="library-section">
+        <div class="section-heading">
+          <div>
+            <h2 id="libraryTitle">Your Error Library</h2>
+            <p>Find a previous fix instead of solving the same problem twice.</p>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-box">
+            <span>⌕</span>
+            <input
+              type="search"
+              id="searchInput"
+              placeholder="Search errors, causes, solutions, tags..."
+              aria-label="Search your error library"
+            >
+            <kbd>Search</kbd>
+          </label>
+
+          <select id="languageFilter" aria-label="Filter by language">
+            <option value="All">All languages</option>
+            <option value="Python">Python</option>
+            <option value="Java">Java</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="SQL">SQL</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <select id="sortFilter" aria-label="Sort errors">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="az">Title A–Z</option>
+          </select>
+        </div>
+
+        <div class="results-row">
+          <p id="resultsCount">0 entries</p>
+          <button class="text-button" id="clearFiltersBtn">Clear filters</button>
+        </div>
+
+        <div class="error-grid" id="errorGrid">
+          <!-- JavaScript renders saved errors here. -->
+        </div>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <div class="empty-icon">⌕</div>
+          <h3 id="emptyTitle">Your library is ready to grow</h3>
+          <p id="emptyMessage">Save your first programming error and its solution.</p>
+          <button class="primary-button" id="emptyAddBtn">＋ Add Your First Error</button>
+        </div>
+      </section>
+
+      <footer class="main-footer">
+        <p>Error2Learning <span>•</span> Learn it once. Fix it faster next time.</p>
+        <p>Your saved entries stay in this browser.</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Add/Edit Error Dialog -->
+  <dialog class="error-dialog" id="errorDialog">
+    <form id="errorForm">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">BUILD YOUR KNOWLEDGE BASE</p>
+          <h2 id="dialogTitle">Save a New Error</h2>
+        </div>
+        <button type="button" class="icon-button" id="closeDialogBtn"
+          aria-label="Close dialog">✕</button>
+      </div>
+
+      <input type="hidden" id="errorId">
+
+      <div class="form-group">
+        <label for="errorTitle">Error title *</label>
+        <input id="errorTitle" maxlength="120" required
+          placeholder="e.g. Django module not found">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="errorLanguage">Programming language *</label>
+          <select id="errorLanguage" required>
+            <option value="">Select language</option>
+            <option>Python</option>
+            <option>Java</option>
+            <option>JavaScript</option>
+            <option>SQL</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="errorFramework">Framework / tool</label>
+          <input id="errorFramework" maxlength="80"
+            placeholder="e.g. Django, Git, React">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="errorMessage">Error message *</label>
+        <textarea id="errorMessage" rows="3" required
+          placeholder="Paste the exact error message..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="errorCause">Why did it happen? *</label>
+        <textarea id="errorCause" rows="3" required
+          placeholder="Explain the root cause in your own words..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="errorSolution">Working solution *</label>
+        <textarea id="errorSolution" rows="5" required
+          placeholder="Paste the corrected code or terminal commands..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="errorTags">Tags</label>
+        <input id="errorTags" maxlength="250"
+          placeholder="pip, installation, environment (comma-separated)">
+        <p class="field-help">Add keywords to make this fix easier to find.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="errorNotes">Extra notes (optional)</label>
+        <textarea id="errorNotes" rows="2"
+          placeholder="How you tested the fix, useful commands, etc."></textarea>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" class="secondary-button" id="cancelDialogBtn">
+          Cancel
+        </button>
+        <button type="submit" class="primary-button" id="saveErrorBtn">
+          Save Error
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
